@@ -35,8 +35,7 @@
 
 #include <termio.h>
 #include <stdio.h>
-#include <wiringPi.h>
-#include <wiringPiI2C.h>
+#include <pigpio.h>
 #include <stdint.h>
 #include <math.h>
 #include <softPwm.h>
@@ -83,3 +82,4 @@ UBYTE DEV_ModuleInit(void);
 void DEV_ModuleExit(void);
 
 #endif
+

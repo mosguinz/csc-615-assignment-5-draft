@@ -40,7 +40,7 @@ parameter	:
 ******************************************************************************/
 void DEV_Set_I2CAddress(UBYTE Add)
 {
-    fd = wiringPiI2CSetup(Add);  
+  fd = i2cOpen(1, Add, 0);    // Per library, i2cFlags = 0
 }
 /******************************************************************************
 function:	
@@ -48,23 +48,22 @@ function:
 ******************************************************************************/
 void DEV_I2C_WriteByte(UBYTE add_, UBYTE data_)
 {
-	 wiringPiI2CWriteReg8(fd, add_, data_);
+  i2cWriteByteData(fd, add_, data_);
 }
 
 void DEV_I2C_WriteWord(UBYTE add_, UWORD data_)
 {
-	 wiringPiI2CWriteReg16(fd, add_, data_);
+  i2cWriteWordData(fd, add_, data_);
 }
 
 UBYTE DEV_I2C_ReadByte(UBYTE add_)
 {
-	return wiringPiI2CReadReg8(fd, add_);
+  return i2cReadByteData(fd, add_);
 }
 
 UWORD DEV_I2C_ReadWord(UBYTE add_)
 {
-    return wiringPiI2CReadReg16(fd, add_);
-    
+  return i2cReadWordData(fd, add_);
 }
 /******************************************************************************
 function:	
@@ -82,23 +81,22 @@ function:
 ******************************************************************************/
 UBYTE DEV_ModuleInit(void)
 {
-	if(wiringPiSetupGpio() < 0) { //use BCM2835 Pin number table
-        printf("set wiringPi lib failed	!!! \r\n");
-        return 1;
-    } else {
-        printf("set wiringPi lib success  !!! \r\n");
-    }
+  if (gpioInitialise() < 0) {
+      printf("pigpio init failed   !!!\r\n");
+      return 1;
+  } else {
+      printf("pigpio init success  !!!\r\n");
+  }
+  //TODO: PWM Config 
+  // softPwmCreate(PWM_PIN, 10, 100);
+  // TODO: ** IS THIS THE CORRECT BINDING?? **
+  gpioPWM(PWM_PIN, 100);
 
-	//I2C Config
-	fd = wiringPiI2CSetup(IIC_Addr);
 
-    //PWM Config
-    softPwmCreate(PWM_PIN, 10, 100);
-
-   
-    pinMode(INT_PIN, INPUT);
-    pullUpDnControl(INT_PIN, PUD_UP);
-	return 0;
+  fd = i2cOpen(1, IIC_Addr, 0);    // Per library, i2cFlags = 0
+  gpioSetMode(INT_PIN, PI_INPUT);
+  gpioSetPullUpDown(INT_PIN, PI_PUD_UP);
+  return 0;
 }
 
 /************************************************/
