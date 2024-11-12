@@ -44,10 +44,13 @@ int main(int argc, char **argv)
         int red = (RGB888 >> 16) & 0xff;
         int green = (RGB888 >> 8) & 0xff;
         int blue = RGB888 & 0xff;
-        
+
+        /* Print color preview at start. */
+        printf("\033[38;2;%d;%d;%dm█\033[0m", red, green, blue);
+
         printf(" RGB888 : R=%d   G=%d  B=%d   RGB888=0X%X  RGB565=0X%X  rgb=%x  ",
                red, green, blue, RGB888, RGB565, rgb.C);
-             
+
         if(TCS34725_GetLux_Interrupt(0xff00, 0x00ff) == 1){
             printf("Lux_Interrupt = 1\r\n");
         }else{
