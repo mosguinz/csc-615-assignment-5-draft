@@ -52,8 +52,8 @@
 /**
  * GPIO read and write
 **/
-#define DEV_Digital_Write(_pin, _value)  digitalWrite(_pin, _value == 0? LOW:HIGH)
-#define DEV_Digital_Read(_pin)  		 digitalRead(_pin)
+#define DEV_Digital_Write(_pin, _value)  gpioWrite(_pin, _value == 0 ? LOW : HIGH);
+#define DEV_Digital_Read(_pin)  		 gpioRead(_pin);
 
 /**
 * IIC 
@@ -63,12 +63,12 @@
 /**
  * delay x ms
 **/
-#define DEV_Delay_ms(__xms)   delay(__xms)
+#define DEV_Delay_ms(__xms)   gpioDelay(__xms * 1000);
 
 /**
  * PWM
 **/
-#define DEV_Set_PWM(_Value)        softPwmWrite(PWM_PIN, _Value);
+#define DEV_Set_PWM(_Value)        gpioSetPWNfrequency(PWM_PIN, _Value);
 #define DEV_PWM_value               100
 /*-----------------------------------------------------------------------------*/
 void DEV_Set_I2CAddress(UBYTE Add);
