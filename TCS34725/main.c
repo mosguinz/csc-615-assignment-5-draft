@@ -41,9 +41,13 @@ int main(int argc, char **argv)
         rgb=TCS34725_Get_RGBData();
         RGB888=TCS34725_GetRGB888(rgb);
         RGB565=TCS34725_GetRGB565(rgb);
-        printf(" RGB888 :R=%d   G=%d  B=%d   RGB888=0X%X  RGB565=0X%X  rgb=%x ", (RGB888>>16), \
-                (RGB888>>8) & 0xff, (RGB888) & 0xff, RGB888, RGB565, rgb.C);
-                
+        int red = (RGB888 >> 16) & 0xff;
+        int green = (RGB888 >> 8) & 0xff;
+        int blue = RGB888 & 0xff;
+        
+        printf(" RGB888 : R=%d   G=%d  B=%d   RGB888=0X%X  RGB565=0X%X  rgb=%x  ",
+               red, green, blue, RGB888, RGB565, rgb.C);
+             
         if(TCS34725_GetLux_Interrupt(0xff00, 0x00ff) == 1){
             printf("Lux_Interrupt = 1\r\n");
         }else{
