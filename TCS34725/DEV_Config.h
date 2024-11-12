@@ -38,7 +38,6 @@
 #include <pigpio.h>
 #include <stdint.h>
 #include <math.h>
-#include <softPwm.h>
 
 #define UBYTE   uint8_t
 #define UWORD   uint16_t
