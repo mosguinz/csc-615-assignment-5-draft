@@ -4,6 +4,7 @@
 
 #include "DEV_Config.h"
 #include "TCS34725.h"
+#include "ColorNaming.h"
 
 UWORD r,g,b,c;
 UWORD cpl,lux,k;
@@ -44,21 +45,14 @@ int main(int argc, char **argv)
         int red = (RGB888 >> 16) & 0xff;
         int green = (RGB888 >> 8) & 0xff;
         int blue = RGB888 & 0xff;
+        float confidence;
+        const char *color_name = GetColorName(red, green, blue, &confidence);
 
         /* Print color preview at start. */
         printf("\033[38;2;%d;%d;%dm█\033[0m", red, green, blue);
 
-        printf(" RGB888 : R=%d   G=%d  B=%d   RGB888=0X%X  RGB565=0X%X  rgb=%x  ",
-               red, green, blue, RGB888, RGB565, rgb.C);
-
-        if(TCS34725_GetLux_Interrupt(0xff00, 0x00ff) == 1){
-            printf("Lux_Interrupt = 1\r\n");
-        }else{
-            printf("Lux_Interrupt = 0\r\n");
-        }
-     
-
-        
+        printf(" RGB888 : R=%d G=%d B=%d", red, green, blue);
+        printf(" -> Color: %s (Confidence: %.2f%%)\n", color_name, confidence * 100);
 	}
 
 	DEV_ModuleExit();
