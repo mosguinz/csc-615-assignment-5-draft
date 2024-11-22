@@ -1,5 +1,6 @@
-#include "ColorDetection.h"
 #include <math.h>
+
+#include "ColorNaming.h"
 
 /* Define a list of predefined colors. */
 const Color color_definitions[] = {
@@ -13,7 +14,7 @@ const Color color_definitions[] = {
     {"Magenta", 255, 0, 255}
 };
 
-const size_t color_definitions_count = sizeof(color_definitions) / sizeof(struct Color));
+const size_t color_definitions_count = sizeof(color_definitions) / sizeof(color_definitions[0]);
 
 /* Calculate Euclidean distance between two colors. */
 static float CalculateColorDistance(uint8_t r1, uint8_t g1, uint8_t b1,
