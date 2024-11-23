@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     rgb888 = TCS34725_GetRGB888(rgb);
 
     /* Shift bits to extract and convert to decimal RGB values. */
-    int red = (rgb888 > 16) & 0xff;
+    int red = (rgb888 >> 16) & 0xff;
     int green = (rgb888 >> 8) & 0xff;
     int blue = rgb888 & 0xff;
     float confidence;
