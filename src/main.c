@@ -55,11 +55,11 @@ int main(int argc, char *argv[])
     const char *color_name = GetColorName(red, green, blue, &confidence);
 
     /* Print color preview at start. */
-    printf("\033[38;2;%d;%d;%dm█\033[0m", red, green, blue);
-
-    /* Print RGB value name color name. */
-    printf(" RGB888 : R=%d G=%d B=%d", red, green, blue);
-    printf(" -> Color: %s (Confidence: %.2f%%)\n", color_name, confidence * 100);
+    printf("\033[38;2;%d;%d;%dm█\033[0m ", red, green, blue);
+    /* Print aligned RGB value, color name, and confidence. */
+    printf(" RGB888: R=%3d G=%3d B=%3d ", red, green, blue);
+    printf("| %-30s", color_name); 
+    printf("| Confidence: %6.2f%%\n", confidence * 100);
   }
 
   return 0;
