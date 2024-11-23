@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
 {
   RGB rgb;
   UDOUBLE rgb888 = 0;
-  UWORD rgb565 = 0;
 
   /* Initialization failed. */
   if (DEV_ModuleInit()) {
@@ -41,16 +40,15 @@ int main(int argc, char *argv[])
     /* This provides the raw RGBC values. */
     rgb = TCS34725_Get_RGBData();
 
-
     /* Convert the raw values to RGB888 format.
     * Note: the interface also provides way to convert to 16-bit RGB
     * using TCS_34725_GetRGB565. We'll just use RGB888 for this example. */
-    rgb888 = TCS34725_GetRGB888rgb);
+    rgb888 = TCS34725_GetRGB888(rgb);
 
     /* Shift bits to extract and convert to decimal RGB values. */
-    int red = (RGB888 >> 16) & 0xff;
-    int green = (RGB888 >> 8) & 0xff;
-    int blue = RGB888 & 0xff;
+    int red = (rgb888 > 16) & 0xff;
+    int green = (rgb888 >> 8) & 0xff;
+    int blue = rgb888 & 0xff;
     float confidence;
 
     /* Get the (web) color names. */
