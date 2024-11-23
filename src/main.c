@@ -1,60 +1,68 @@
-#include <stdio.h>      //printf()
-#include <stdlib.h>     //exit()
+#include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 
 #include "DEV_Config.h"
 #include "TCS34725.h"
 #include "ColorNaming.h"
 
-UWORD r,g,b,c;
-UWORD cpl,lux,k;
+UWORD r, g, b, c;
 
-void  Handler(int signo)
+void sig_handler(int _)
 {
-    //System Exit
-    printf("\r\nHandler:Program stop\r\n");     
-    DEV_ModuleExit();
-    exit(0);
+  printf("\nStopping...\n");
+  DEV_ModuleExit();
+  exit(0);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-    RGB rgb;
-    UDOUBLE RGB888=0;
-    UWORD   RGB565=0;
-	if (DEV_ModuleInit() != 0){
-        exit(0);
-    }
-    
-    // Exception handling:ctrl + c
-    signal(SIGINT, Handler);
-    
-    if(TCS34725_Init() != 0){
-        printf("TCS34725 initialization error!!\r\n");
-        exit(0);
-    } 
-    printf("TCS34725 initialization success!!\r\n");
-    
-    TCS34725_SetLight(60);
-    // DEV_Delay_ms(2000);
-    
-    while(1){    
-        rgb=TCS34725_Get_RGBData();
-        RGB888=TCS34725_GetRGB888(rgb);
-        RGB565=TCS34725_GetRGB565(rgb);
-        int red = (RGB888 >> 16) & 0xff;
-        int green = (RGB888 >> 8) & 0xff;
-        int blue = RGB888 & 0xff;
-        float confidence;
-        const char *color_name = GetColorName(red, green, blue, &confidence);
+  RGB rgb;
+  UDOUBLE rgb888 = 0;
+  UWORD rgb565 = 0;
 
-        /* Print color preview at start. */
-        printf("\033[38;2;%d;%d;%dm█\033[0m", red, green, blue);
+  /* Initialization failed. */
+  if (DEV_ModuleInit()) {
+    exit(0);
+  }
 
-        printf(" RGB888 : R=%d G=%d B=%d", red, green, blue);
-        printf(" -> Color: %s (Confidence: %.2f%%)\n", color_name, confidence * 100);
-	}
+  /* Trap SIGINT to exit early. Must be AFTER `gpioInitialise` */
+  signal(SIGINT, sig_handler);
 
-	DEV_ModuleExit();
-    return 0; 
+  /* Initialize TCS34725. */
+  if (TCS34725_Init()) {
+    printf("Failed to initialize TCS34725\n");
+    exit(0);
+  }
+
+  /* Main loop to read color values. */
+  while (1) {
+
+    /* This provides the raw RGBC values. */
+    rgb = TCS34725_Get_RGBData();
+
+
+    /* Convert the raw values to RGB888 format.
+    * Note: the interface also provides way to convert to 16-bit RGB
+    * using TCS_34725_GetRGB565. We'll just use RGB888 for this example. */
+    rgb888 = TCS34725_GetRGB888rgb);
+
+    /* Shift bits to extract and convert to decimal RGB values. */
+    int red = (RGB888 >> 16) & 0xff;
+    int green = (RGB888 >> 8) & 0xff;
+    int blue = RGB888 & 0xff;
+    float confidence;
+
+    /* Get the (web) color names. */
+    const char *color_name = GetColorName(red, green, blue, &confidence);
+
+    /* Print color preview at start. */
+    printf("\033[38;2;%d;%d;%dm█\033[0m", red, green, blue);
+
+    /* Print RGB value name color name. */
+    printf(" RGB888 : R=%d G=%d B=%d", red, green, blue);
+    printf(" -> Color: %s (Confidence: %.2f%%)\n", color_name, confidence * 100);
+  }
+
+  return 0;
 }
